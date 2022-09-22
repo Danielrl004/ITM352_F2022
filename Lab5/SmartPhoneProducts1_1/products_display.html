@@ -15,10 +15,10 @@
     
     <header>
         <h1>
-            <script>
-            var store_name ="Daniel's Used Smart Phone Store";
-            document.write(store_name);
-        </script>
+            <p style="text-align: center; font-weight: bold;">
+                Hits:<span id="hits_span">0</span>
+                Spins:<span id="spins_span">0</span>
+                </p>                
         </h1>
     </header>
     <div>
@@ -59,6 +59,12 @@
                 </h2>
                 <p>$10.00</p>
                 <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/Blackberry.jpg">
+                <section class="item" onmouseover="className= 'item rotate' "onclick="className='item'"></section>
+                <p style="text-align: center; font-weight: bold;">
+                    Hits:<span id="hits_span">0</span>
+                    Spins:<span id="spins_span">0</span>
+                    </p>
+                </section>
             </section>
 
         </main>
@@ -69,5 +75,12 @@
         </h1>
     </footer>
 </body>
-
+<script>
+    var store_name ="Daniel's Used Smart Phone Store";
+</script>
+<footer>
+    <script>
+        document.write(store_name);
+    </script>
+</footer>
 </html>
