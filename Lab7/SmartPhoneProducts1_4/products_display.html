@@ -7,11 +7,16 @@
     <title>Smartphones</title>
     <link rel="stylesheet" href="products-style.css">
     <style id="localStyle"></style>
-
+    <script>var hits=0; var spins=0; hitSpinRatio=0; var progress = 0;
+        </script>
+    <script>
+        var first_name = "<b>Daniel</b>"; last_name = "<i>Lott</i>";
+    </script>
     
 </head>
+
 <header>
-        <font size = "100">
+    <font size = "100">
         <script>
             var first_name = "Daniel";
             first_letter_first_name = first_name[0];
@@ -21,51 +26,49 @@
             document.write(outString);
         </script>
     </font>
-    <script>
-        var mouseClicks = 0, mouseMoves = 0, mouseRatio = 0;
-    </script>
-    <button onclick="mouseClicks++; mouseRatio = mouseClicks/mouseMoves;
-                    hits_span.innerHTML = mouseClicks; ratio.innerHTML = mouseRatio.toFixed(4)"
-            onmousemove="mouseMoves++; mouseRatio = mouseClicks / mouseMoves;
-                    spins_span.innerHTML=mouseMoves; ratio.innerHTML = mouseRatio.toFixed(4)"
-    >Hit Me</button>
-
-    <p id="hits_span">0</p>
-
-    <p id="spins_span">0</p>
-
-    <p id="ratio">0</p>
+    <p style="text-align: center; font-weight: bold;">
+        hits:<span id="hits_span">0</span>
+        spins:<span id="spins_span">0</span>
+        hit/spin:<span id="hit_spin_span">0</span>
+        Progress:<span id="win_span">pending...</span>
+        </p>
 </header>   
-    
-    <input id='speedSlider' type='range' min=".1" max="5" step=".1" style="direction: rtl;"
-    onchange="localStyle.innerHTML = '.rotate img {animation-duration: ' + speedSlider.value + 's;}';"
-    >
-    <div><main>
-        <section class="item" onmouseover="className='item rotate' 
-        spins++;
-        spins_span.innerHTML = spins;
-        ratio = hits/spins;
-        spins_span.innerHTML = spins;
-        if (spins < hits * 2) {
-            // code to execute when true
-            win_span.innerHTML = 'You Win!';
-        } else {
-            // code to execute when false
-            win_span.innerHTML = 'You Lose';
-        }
-       " onclick="className='item' 
-            hits++;
-            hits_span.inner.HTML = hits;
-            ratio = hits/spins;
-            hits_spin_span.innerHTML = ratio.toFixed(2);
-                if (spins < hits * 2) {
-                // code to execute when true
-                win_span.innerHTML = 'You Win!';
-        } else {
-                // code to execute when false
-                win_span.innerHTML = 'You Lose';
-        }
-        ">
+
+<input id='speedSlider' type='range' min=".1" max="5" step=".1" style="direction: rtl;"
+onchange="localStyle.innerHTML = '.rotate img {animation-duration: ' + speedSlider.value + 's;}';"
+>
+<div><main>
+    <section class="item" onmouseover="className='item rotate'; spins++; hitSpinRatio = hits / spins; spins_span.innerHTML=spins;  hit_spin_span.innerHTML= hitSpinRatio.toFixed(2);
+           if ( hitSpinRatio < .25 ) {
+        progress = 'On your way!';
+        win_span.innerHTML = progress;
+    } else if ( hitSpinRatio < 0.50 ) {
+        progress = 'Almost there!';
+        win_span.innerHTML = progress;
+    } else if ( hitSpinRatio > 0.50 ) {  
+            progress = 'You won!';
+            win_span.innerHTML = progress;
+        
+    } else { 
+        progress = 'Get going!';
+        win_span.innerHTML = progress;
+}      
+
+    "onclick="className='item'; hits++; hitSpinRatio = hits / spins; hits_span.innerHTML=hits;  hit_spin_span.innerHTML= hitSpinRatio.toFixed(2);
+           if ( hitSpinRatio < .25 ) {
+        progress = 'On your way!';
+        win_span.innerHTML = progress;
+    } else if ( hitSpinRatio < 0.50 ) {
+        progress = 'Almost there!';
+        win_span.innerHTML = progress;
+    } else if ( hitSpinRatio > 0.50 ) {  
+            progress = 'You won!';
+            win_span.innerHTML = progress;
+        
+    } else { 
+        progress = 'Get going!';
+        win_span.innerHTML = progress;
+}">
         <h2>HTC</h2>
         <p>&dollar; 40.00</p>
         <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/HTC.jpg" alt="photo"></img>
@@ -90,16 +93,22 @@
         <p>&dollar; 10.00</p>
         <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/Blackberry.jpg" alt="photo"></img>
     </section>
+    
 </main></div>
 
-<p class="quote"></p>
 
-<h2>Your one-stop phone shop</h2>
-</body>
+<p class="quote"></p>
 <footer>
     <table border="1" style="margin-left: auto; margin-right: auto; text-align: center;">
-        <tbody><tr><th colspan="2"><h1>Your One Stop For Used Phones - ${first_letter_first_name, first_letter_last_name}</h1></th></tr>
-        <tr><td>1.</td><td><br>Copyright @ Dan Port</td></tr>
+        <tbody><tr><th colspan="2">
+            <h1>
+                <script>
+                    document.getElementById(first_name).innerHTML= first_name.slice(1);
+                    document.getElementById(last_name).innerHTML= last_name.slice(1);
+                </script>
+            </h1>
+        </th></tr>
+        <tr><td>1.</td><td><br>Copyright @ Daniel Lott</td></tr>
         <tr><td>2.</td><td>2021</td></tr>
         <tr><td>3.</td><td>11:15 AM</td></tr>
     </tbody></table>
