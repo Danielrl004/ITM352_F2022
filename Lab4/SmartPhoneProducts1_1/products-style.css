@@ -1,12 +1,12 @@
-/*General*/
+/* General */
+ 
 
+ html {
 
-html {
-  
   font-family: 'Raleway', sans-serif;
   background-color: yellow;
   font-size: 10px;
-  
+
 }
 
 body {
@@ -18,10 +18,10 @@ body {
 
 
 h1, h2 {
-  
+
   font-family: 'Cherry Swash', cursive;
   margin: 0;
-  
+
   text-align: center;
 }
 
@@ -148,23 +148,9 @@ section p {
 .item img {
     width: 200px;
     height: 200px; 
-    
+
     display: block;
     position: absolute;
     bottom: 0px;
-    
-}
 
-.rotate img
-{
-  animation: rotation .3s infinite linear;
-}
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
 }
