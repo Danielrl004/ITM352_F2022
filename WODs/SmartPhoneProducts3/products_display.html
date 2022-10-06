@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Smart Phone Store</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Cherry+Swash%7CRaleway" rel="stylesheet">
+
+    <link href="products-style.css" rel="stylesheet">
+
+    <script src="./products_data.js"></script>
+<script>
+products = [
+// Product 1
+{"name" : "HTC",
+"price" : 40.00,
+"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/HTC.jpg",
+},
+// Product 2
+{"name" : "Apple",
+"price" : 75.00,
+"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/iphone-3gs.jpg",
+},
+// Product 3
+{"name" : "Nokia",
+"price" : 35.00,
+"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/Nokia.jpg",
+},
+// Product 4
+{"name" : "Samsung",
+"price" : 45.00,
+"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/Samsung.jpg",
+},
+// Product 5
+{"name" : "Blackberry",
+"price" : 10.00,
+"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/Blackberry.jpg"}
+]
+</script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Daniel's Used Smart Phone Store</h1>
+    </header>
+    <div>
+        <aside>
+            <div style="font-size:4rem;text-align:center;font-weight: bold;font-style: italic; color: white">
+                We sell from
+                around the globe!
+            </div>
+        </aside>
+
+        <main>
+        <script>
+            for (i = 0; i < products.length; i++) {
+                document.write(`
+            <section class="item">
+                <h2>${products[i].name}</h2>
+                <p>$${products[i].price}</p>
+                <img src="${products[i].image}">
+            </section>
+            `);
+            }
+        </script>
+
+        </main>
+    </div>
+    <footer>
+        <h1>
+            Your One Stop For Used Phones
+        </h1>
+    </footer>
+</body>
+
+</html>
