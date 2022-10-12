@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // To define the total amount of money in cents
+        var amount = 172
+
+        // Max amount of Quarters
+        quarters = parseInt(amount/25);
+
+        // Max amount of Dimes
+        var remainder = amount%25;
+
+        dimes = parseInt(remainder/10);
+
+        // Max amount of Nickel
+        var remainder = amount%10;
+
+        nickels = parseInt(remainder/5);
+
+        // Remaining amount in Pennies
+        pennies = amount%5;
+
+        document.write('Quarter: ', quarters, ' Dimes: ', dimes, ' Nickels: ', nickels, ' Pennies: ', pennies);
+    </script>
+</body>
+</html>
