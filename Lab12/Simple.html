@@ -8,23 +8,24 @@
 </head>
 <body>
     <script>
-        let params = (new URL(document.location)).searchParams; //creates new URL object, built into js for the current location, give the search params in a local variable called search params
-        let GET ={};
-         params.forEach(function(value, key){Get[key]=value; document.write("<br>GOT" + value)}); //key is attribute and value = value. Key=email or text box. Value is what ever user enters into the search box
+        let params = (new URL(document.location)).searchParams;
+        let GET = {};
+        params.forEach(function (value, key) { GET[key] = value; document.write("<BR>Got " + value); });
     </script>
+    
     <form name="my_form" action="" method="GET">
-        Enter something:
-        <input type="text" name="my_textbox" id="the_textbox"> <script>// Adds random search box </script>
-    <br>
-        Enter Email:
-        <input type="email" name="my_email"> <script>// Adds email search box </script>
-        <select name="select_box"> <script>// Adds dropdown list to Email searchbox </script>
-        <option value="Regular">Regular</option>
-        <option value="Special">Special</option>
-        </select> 
-    <br>
-        <input type = "submit">
-        </input>
+Enter something:
+<input type="text" name="my_textbox" id="the_textbox">
+<BR>
+Enter email:
+<input type="email" name="my_email">
+<BR>
+<select name="select_box">
+   <option value="Regular">Regular</option>
+   <option value="Special">Special</option>
+</select>
+<BR>
+<input type="submit">
     </form>
 </body>
 </html>

@@ -9,35 +9,7 @@
 
     <link href="products-style.css" rel="stylesheet">
 
-    <script src="./products_data.js"></script>
-<script>
-products = [
-// Product 1
-{"name" : "HTC",
-"price" : 40.00,
-"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/HTC.jpg",
-},
-// Product 2
-{"name" : "Apple",
-"price" : 75.00,
-"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/iphone-3gs.jpg",
-},
-// Product 3
-{"name" : "Nokia",
-"price" : 35.00,
-"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/Nokia.jpg",
-},
-// Product 4
-{"name" : "Samsung",
-"price" : 45.00,
-"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/Samsung.jpg",
-},
-// Product 5
-{"name" : "Blackberry",
-"price" : 10.00,
-"image" : "http://dport96.github.io/ITM352/morea/080.flow-control-II/Blackberry.jpg"}
-]
-</script>
+    <script src="./product_data.js"></script>
 </head>
 
 <body>
@@ -58,7 +30,7 @@ products = [
             for (i = 0; i < products.length; i++) {
                 document.write(`
             <section class="item">
-                <h2>${products[i].name}</h2>
+                <h2>${products[i].brand}</h2>
                 <p>$${products[i].price}</p>
                 <img src="${products[i].image}">
             </section>
