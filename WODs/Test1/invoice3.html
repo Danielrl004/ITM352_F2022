@@ -1,23 +1,23 @@
 <script src="./product_data.js"></script>
- 
 <script>
  
     quantities = [1,1,1,1,1];
- 
-    function isNonNegInt(queryString, returnErrors = false){
-    errors = []; // assume no errors at first
-    if(Number(queryString) != queryString) errors.push('Not a number!'); // Check if string is a number value
-    if(queryString < 0) errors.push('Negative value!'); // Check if it is non-negative
-    if(parseInt(queryString) != queryString) errors.push('Not an integer!'); // Check that it is an integer
-     
-    if (returnErrors) {
-        return errors;
-    } else if (errors.length == 0) {
-            return true;
-    } else {
-            return false;
+
+    function isNonNegInt (queryString, returnErrors = false) {
+      errors = []; // assume no errors at first
+      if(Number(queryString) != queryString) errors.push('Not a number!'); // Check if string is a number value
+      if(queryString < 0) errors.push('Negative value!'); // Check if it is non-negative
+      if(parseInt(queryString) != queryString) errors.push('Not an integer!'); // Check that it is an integer
+      
+      if (returnErrors) {
+          return errors;
+      } else if (errors.length == 0) {
+          return true;
+      } else {
+          return false;
+      }
     }
-    }
+
     function generate_item_rows(product_quantities_array){
       for(i=0; i<product_quantities_array.length; i++) {
         if(quantities[i]==0){
@@ -29,13 +29,12 @@
            (subtotal += extended_price)
           } else {extended_price=0}
 
-          
         document.write(`
           <tr>
             <td width="43%">${products[i].brand}</td>
             <td align="center" width="11%">${quantities[i]}
             <br>
-            <div style="color:red;">${errorArray.join("<br>")}</div></br></td>
+            <div style="color:red;">${errorArray.join("<br>")}</div></td>
             <td width="13%">\$${products[i].price}</td>
             <td width="54%">\$${extended_price}</td>
           </tr>
@@ -60,6 +59,15 @@
     <title>Document</title>
 </head>
 <body>
+  <script>
+    params = (new URL(document.location)).searchParams;
+
+    for(i=0; i<quantities.length; i++){
+      quantities[i]=params.get(`quantity${i}`);
+      document.write(quantities[i]);
+    }
+    
+  </script>
     <table border="2">
         <tbody>
           <tr>

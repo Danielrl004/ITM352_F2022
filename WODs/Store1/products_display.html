@@ -11,19 +11,14 @@
 
     <script src="./product_data.js"></script>
 </head>
-
+<form name="submit_form" action="./invoice.html" method="GET">
 <body>
 
     <header>
         <h1>Daniel's Used Smart Phone Store</h1>
     </header>
     <div>
-        <aside>
-            <div style="font-size:4rem;text-align:center;font-weight: bold;font-style: italic; color: white">
-                We sell from
-                around the globe!
-            </div>
-        </aside>
+
 
         <main>
            <script>
@@ -31,6 +26,8 @@
            document.write(`
             <section class="item">
                 <h2>${products[i].brand}</h2>
+                <h6>Quantities</h6>
+                <input type="text" name="quantity${i}" id="quantity${i}_label">
                 <p>$${products[i].price}</p>
                 <img src=${products[i].image}>
             </section>
@@ -43,6 +40,8 @@
     <footer>
         <h1>
             Your One Stop For Used Phones
+            <br>
+            <input type="submit" value="Purchase!">
         </h1>
     </footer>
 </body>

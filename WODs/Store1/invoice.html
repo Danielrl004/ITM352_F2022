@@ -29,7 +29,7 @@
 
     document.write(`
           <tr>
-            <td width="43%">${products[i].name}</td>
+            <td width="43%">${products[i].brand}</td>
             <td align="center" width="11%">${quantities[i]}<div style="color:red;">${errorArray.join("<br>")}</div></td>
             <td width="13%">\$${products[i].price}</td>
             <td width="54%">\$${extended_price}</td>
@@ -52,6 +52,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<script>
+  params = (new URL(document.location)).searchParams;
+
+  for(i=0; i<quantities.length; i++) {
+    quantities[i] = params.get(`quantity${i}`);
+  }
+</script>
 <body>
     <table border="2">
         <tbody>

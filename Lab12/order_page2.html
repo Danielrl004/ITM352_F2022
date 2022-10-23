@@ -10,7 +10,7 @@
 
 <body>
     <script>
-        function isNonNegativeInteger(queryString, returnErrors = false) {
+        function isNonNegativeInteger(queryString, returnErrors = false) { //Check if quanity is a valid interger
             errors = []; // assume no errors at first
             if (Number(queryString) != queryString) {
                 errors.push('Not a number!'); // Check if string is a number value
@@ -27,7 +27,7 @@
             }
         }
 
-        function checkQuantityTextbox(textbox) {
+        function checkQuantityTextbox(textbox) { //replaces the value of the qty_textbox_message (repeats string below textbox) with either the input string or error msg depending on the output of the isNonNegativeInterger function
             let input_string = textbox.value;
             let error_array = isNonNegativeInteger(input_string, true);
             if (error_array.length == 0) {
@@ -38,7 +38,7 @@
 
         }
 
-        function displayPurchase() {
+        /*function displayPurchase() { //displays the thank you message
             let value = document.getElementById('quantity_textbox').value;
             let is_valid = isNonNegativeInteger(value);
             if (is_valid) {
@@ -46,12 +46,11 @@
             } /* else {
                 document.write(`Enter a valid quantity bozo!`);
             }*/
-        }
+        //}
 
-        let params = (new URL(document.location)).searchParams;
-        console.log("Params=" + params);
+        let params = (new URL(document.location)).searchParams; 
         if (params.has("quantity_textbox")) {
-            let the_text = params.get("quantity_textbox");
+            let the_text = params.get("quantity_textbox");//writing out the URL which includes the quantity_textbox
 
             // Validate the input and if good, thank the user, otherwise print error message
             if (isNonNegativeInteger(the_text)) {
@@ -63,7 +62,7 @@
 
     </script>
  <script> // id is on the dom, name = searchable / what you'd pull</script>
-    <form name="quantity_form" action="display_purchase.2.html" method="GET">
+    <form name="quantity_form" action="display_purchase2.html" method="GET">
         <label>Buy Something!</label>
         <BR><input type="text" onkeyup="checkQuantityTextbox(this);" id="textbox1" 
             name="text1"></input>

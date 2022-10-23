@@ -14,7 +14,7 @@
     <script src="./products_data.js"></script>
 
 </head>
-
+<form name="quantity_form" action="./invoice3.html" method="GET">
 <body>
     <header>
         <h1>Dani's Used Smart Phone Store</h1>
@@ -23,31 +23,35 @@
         <main>
  
 
-            </form>
+        
            <script>
             for (i=0; i<products.length; i++){
                 document.write(`
                 <section class="item">
                 <h2>${products[i].brand}</h2>
                 <h6>Quantity</h6>
-                <form name="my_form" action="" method="GET">
-                <input type="text" name="quantity" id="quantity_textbox">
-                </form>
+                <input type="text" name="quantity${i}" id="quantities${i}_label">
+                </input>
                 <p>\$${products[i].price}</p>
                 <img src="${products[i].image}">
             </section>
                 `)
-        }
+        }   
+
            </script>
+           
         </main>
     </div>
     <footer>
         <h1>
             Your One Stop For Used Phones
-            <br>
-            <button>Purchase!</button>
+                 
+                    <label>Buy Something!</label>
+                    <BR><input type="submit" value="Purchase!"></input>
+                
         </h1>
     </footer>
-</body>
 
+</body>
+</form>
 </html>
