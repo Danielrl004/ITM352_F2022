@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./product_data.js"></script>
+    <link rel="stylesheet" href="receipt.css">
+    <title>Receipt Page</title>
+</head>
+
+<body>
+    <script>
+        function isNonNegativeInteger(queryString, returnErrors = false) {
+            errors = []; // assume no errors at first
+            if (Number(queryString) != queryString) {
+                errors.push('Not a number!'); // Check if string is a number value
+            } else {
+                if (queryString < 0) errors.push('Negative value!'); // Check if it is non-negative
+                if (parseInt(queryString) != queryString) errors.push('Not an integer!'); // Check that it is an integer
+            }
+            if (returnErrors) {
+                return errors;
+            } else if (errors.length == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        let params = (new URL(document.location)).searchParams;
+        document.write("<H1>Receipt</H1><table border=1><th>Item</th><th>Price</th><th>Quantity</th><th>Item Total</th>");
+
+        for (i = 0; i < products.length; i++) {
+            let name = "text" + i;
+            if (params.has(name)) {
+                var q = params.get(name);
+
+                if (typeof q != 'undefined') {
+                    if (isNonNegativeInteger(q) && q != 0) {  // We have a valid quantity
+
+                        let brand = products[i]['name'];
+                        let brand_price = products[i]['price'];
+                        document.write("<tr>");
+                        document.write(`<td>${brand}</td><td>$ ${brand_price}</td><td>${q}</td><td>$ ${brand_price * q}</td>`);
+                        document.write('</tr>');
+                    }
+                }
+            }
+        }
+        document.write("</table><H2>Thank you for your order!</H2>");
+    </script>
+</body>
+
+</html>

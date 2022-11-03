@@ -32,21 +32,8 @@ app.all('*', function (request, response, next) {
     next();
 });
 
-app.post("/process_form", function (request, response) {
-    var q = request.body['text1'];
-    if (typeof q != 'undefined') {
-        if(isNonNegInt(q)){
-            let brand = products[0]['brand'];
-            let brand_price = products[0]['price'];
-            response.send(`Thank you for purchasing <B>${q}</B> ${brand}`);
-
-        } else {
-    response.send(`Error: ${q} is not a quantity. Hit the back button to fix.`);
-        } 
-    }
- });
- 
- var products = require(__dirname + '/product_data.json');
+var products = require(__dirname + '/product_data.json');
+products.forEach((prod,i) => {prod.total_sold = 0});
  
 app.get("/product_data.js", function (request, response, next) {
    response.type('.js');
@@ -54,5 +41,18 @@ app.get("/product_data.js", function (request, response, next) {
    response.send(products_str);
 });
 
+app.post("/process_form", function (request, response) {
+    var q = request.body['text1'];
+    if (typeof q != 'undefined') {
+        if(isNonNegInt(q)){
+            let name = products[0]['name'];
+            let name_price = products[0]['price'];
+            response.send(`Thank you for purchasing <B>${q}</B> ${name} at ${name_price} each for a total of ${name_price * q}`);
+
+        } else {
+    response.send(`Error: ${q} is not a quantity. Hit the back button to fix.`);
+        } 
+    }
+ });
 
 app.listen(8080, () => console.log(`listening on port 8080`)); // note the use of an anonymous function here to do a callback

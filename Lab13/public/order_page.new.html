@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./product_data.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function isNonNegInt(queryString, returnErrors = false){
+        errors = []; // assume no errors at first
+            if(Number(queryString) != queryString) {
+             errors.push('Not a number!'); // Check if string is a number value
+            } else {
+            if(queryString < 0) errors.push('Negative value!'); // Check if it is non-negative
+            if(parseInt(queryString) != queryString) errors.push('Not an integer!'); // Check that it is an integer
+            }
+
+        if (returnErrors) {
+            return errors;
+        } else if (errors.length == 0) {
+            return true;
+        } else { 
+            return false;
+        }
+    }
+
+        function checkQuantityTextbox(theTextbox) {
+                errs = isNonNegInt(theTextbox.value, true);
+                document.getElementById(theTextbox.name + '_message').innerHTML = errs.join(", ");
+            }
+
+        function display_purchase() {
+            let value = document.getElementById('quantity_textbox').value;
+        let validate = isNonNegInt(value);
+        if (validate) {
+            document.write(`Thank you for ordering ${value} things!`);
+        } /* else {
+            document.write('Enter valid quanatity!!');
+        } */
+    }
+        let params = (new URL(document.location)).searchParams;
+
+            console.log("Params=" + params);
+            if (params.has("error")) {
+                let err_msg = params.get("error");
+                alert(err_msg);
+            }
+
+            if (params.has("quantity_textbox")) {
+   
+            let the_text = params.get("quantity_textbox");
+
+            //validate input and if good, thank the user, otherwise print an error message
+            if (isNonNegInt(the_text)){
+                window.location.href = "display_purchase.html" + document.location.search;
+        }
+    }
+
+
+
+    </script>
+        <form name='quantity_form' action="process_form" method="POST">
+            <script>
+                for (i in products) {
+                    document.write(`<h3>${products[i]["name"]} at \$${products[i]["price"]} (${products[i]["total_sold"]} sold)</h3>`);
+                    document.write(`
+            <label for="quantity_textbox">quantity desired:</label>
+            <input type="text" name="quantity_textbox[${i}]" onkeyup="checkQuantityTextbox(this);">
+            <span id="quantity_textbox[${i}]_message">Enter a quantity</span>
+            `);
+                }
+            </script>
+            <br>
+            <input type="submit" value='Purchase'>
+        </form>
+    
+    <script>
+            if (params.has('quantity_textbox')) { //makes the form "sticky"
+    quantity_form["quantity_textbox"].value = params.get('quantity_textbox');
+    checkQuantityTextbox(quantity_form["quantity_textbox"]);
+    }
+    </script>
+</body>
+</html>
