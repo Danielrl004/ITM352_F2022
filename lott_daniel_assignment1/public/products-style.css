@@ -1,7 +1,7 @@
 html {
   background: url(images/bike.webp) no-repeat center center fixed; 
   font-family: 'Raleway', sans-serif;
-  background-color: beige;
+  background-color: #ff6961;
   font-size: 10px;
 
 }
@@ -28,7 +28,7 @@ h1 {
   background-size: 48px 48px;
   background-blend-mode: lighten;
   color: white;
-  text-shadow: 5px 5px 3px black;
+  text-shadow: 5px 5px 1px black;
 }
 
 h2 {
@@ -92,7 +92,7 @@ h6 {
   position: absolute;
   right: 35px;
   z-index: 3000;
-  padding-top: 30px;
+  bottom: 50px;
   display: block;
   margin-top: 70px;
   word-wrap: normal;
@@ -149,7 +149,7 @@ main {
 section {
   width: 45%;
   margin: 5px;
-  background-color: beige;
+  background-color: #C9C4CF;
   position: sticky;
   height: 215px;
   border-radius: 50%;
@@ -178,6 +178,7 @@ section p {
   width: 100px;
   color: black;
   background-color: #FDFD96;
+  box-shadow: 3px 3px 1px black;
   
 }
 

@@ -21,14 +21,15 @@ products = require('./public/product_data.json');
 //Runs through each element in the product array and initiailly set the total_sold 0
 products.forEach( (prod,i) => {prod.total_sold = 0}); 
 
-
+//Taken from 
 //stringify the products array on product_data.json to the variable products_str
 app.get('/product_data.js', function (request, response, next) { 
    response.type('.js');
-   var products_str = `var products = ${JSON.stringify(products)};`;
-   response.send(products_str);
+   var products_str = `var products = ${JSON.stringify(products)};`; //Stringifies the product array in the product_display.json and sets the string to = products_str variable
+   response.send(products_str); 
 });
 
+//Taken from the Stor1 WOD
 //check if there are any invalid quantity inputs
 function isNonNegInt(quantityString, returnErrors = false) {
     errors = []; // assume no errors at first
@@ -48,29 +49,37 @@ function isNonNegInt(quantityString, returnErrors = false) {
 };
 
 // process POST request which will validate the quantities and check the qty_available. 
-//Code source: Wokred with Erin Tachino and Professor Kazman, Lab13-Ex5. 
+//Code source: Worked with Erin Tachino and Professor Kazman, Lab13-Ex5. 
 app.post("/invoice.html", function (request, response) {
     // Process the invoice.html form for all quantities and then redirect if quantities are valid
-    let valid = true;
-    let ordered = "";
-    let valid_num= true;
+    let valid = true;  //going to use the boolean to verify if the quantity entered is less than the qty_available 
+    let ordered = ""; //ordered variable creates a string that will be used in URL on the invoice page
+    let valid_num= true; 
     for (i = 0; i < products.length; i++) { // Runs loop for all products and their respective entered quantities
-        let qty_name = "quantity" + i;
-        let qty = request.body["quantity" + i];
-            if (isNonNegInt(qty) && qty > 0 && Number(qty) <= products[i].qty_available) {   
-                // If the quantity meets the above conditions, then the qty of products sold will accumulate to total_sold
-                products[i].total_sold += Number(qty);
+        let qty_name = 'quantity' + i; //going to be used to set the url string for the different quantities entered in the textbox for each product 
+        let qty = request.body['quantity' + i]; //pulls product quantities for i and sets it to qty. to be used
+        if (qty == "") continue; //if no inputs are entered into a product quantity textbox, then continue to the next product in the qty array.
+            if (isNonNegInt(qty) && qty > 0 && Number(qty) <= products[i].qty_available) {
+            //if the qty meets the above criteria, then update the product's qty sold and available with the respective product quantities entered
+                products[i].qty_available -= Number(qty);//subtracts quantities from qty_available
+                products[i].total_sold += Number(qty); //increments quantities to quantities sold
                 ordered += qty_name + "=" + qty + "&"; //writes the URL string combining the valid quantities entered by the user
-            } else if(isNonNegInt(qty) != true) {
-                valid_num = false
-            } else if (Number(qty) >= products[i].qty_available) {
-                // If doesn't meet if() conditions or inputs are invalid, then valid = false
+            } else if(isNonNegInt(qty) != true) {                 
+
+                valid_num = false;
+            } else if(Number(qty) >= products[i].qty_available) {
+                // If the quantities enter are greater then the qty_available, then valid = false (returns)
                 valid = false;
              }
             }
+    //from Lab 13 info_server.new.js, errors will redirect to products display page
+    //if the number entered is not a valid number as identified through the isNonNegInt(qty) or did not meet the other conditions set in the if statement, then redirect to error msg.
+    if(!valid_num){ 
+        response.redirect('products_display.html?error=Please Enter Valid Quantity');
+    }
+    //if quantity available is less then the amount of quantity ordered, then redirect to error page
     if (!valid) {
-        // If an error is found, then redirect to the error page
-        response.redirect('products_display.html?error=Invalid');
+        response.redirect('products_display.html?error=Not Enough Left In Stock');
     } else {
         // If no errors are found, then redirect to the invoice page.
         response.redirect('invoice.html?' + ordered);
