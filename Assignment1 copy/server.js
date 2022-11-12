@@ -1,8 +1,6 @@
 var express = require('express'); // importing the express file from node_modules
 var app = express(); //putting imported express files into function named app
 // Routing 
-var crypto = require('crypto');
-crypto.createHash('sha256')
 
 // route all other GET requests to files in public 
 app.use(express.static(__dirname + '/public'));
@@ -109,9 +107,7 @@ app.get("/login", function (request, response) {
 <input type="password" name="password" size="40" placeholder="enter password"><br />
 <input type="submit" value="Submit" id="submit">
 <br>
-</form>
-<form action="/register" method="GET">
-Don't have an account? Register here: <input type="submit" value="Register" id="submit"/>
+Don't have an account? Register here: <input type="button" onclick="location.href='/register';" value="Register" />
 </form>
 </body>
     `;

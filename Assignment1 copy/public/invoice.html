@@ -2,18 +2,7 @@
     <link href="invoice-style.css" rel="stylesheet">
     
 
-    <script>
-var fs = require('fs'); //Imports the File System Module in Node.js
-var fname = "user_data.json"; 
 
-if (fs.existsSync(fname)) {
-    var data = fs.readFileSync(fname, 'utf-8');
-    var users = JSON.parse(data);
-    document.write(users[i].name);
-} else {
-    console.log("Sorry file " + fname + " does not exist.");
-}
-    </script>
 <script>
           function isNonNegInt(queryString, returnErrors = false) { 
             errors = []; // assume no errors at first
