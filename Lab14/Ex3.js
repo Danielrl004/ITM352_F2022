@@ -1,23 +1,17 @@
-const { response } = require('express');
 var express = require('express');
 var app = express();
-
 
 app.use(express.urlencoded({ extended: true }));
 
 var fs = require('fs');
-
 var fname = "user_data.json";
 
-if(fs.existsSync(fname)) {
-    //sets data of 
-    var data = fs.readFileSync(fname, 'utf-8')
-    //more flexible than using require and also sets data to be read as a JSON. 
+if (fs.existsSync(fname)) {
+    var data = fs.readFileSync(fname, 'utf-8');
     var users = JSON.parse(data);
-    var status = fs.statSync(fname);
-    console.log(status);
+    console.log(users);
 } else {
-    console.log("sorry file" + fname + "does not exist.");
+    console.log("Sorry file " + fname + " does not exist.");
 }
 
 app.get("/login", function (request, response) {
@@ -40,19 +34,18 @@ app.post("/login", function (request, response) {
     let user_name = POST["username"];
     let user_pass = POST["password"];
 
-console.log("Username=" + user_name + " passwords=" + user_pass);
-response.send("Got a user");
+    console.log("User name=" + user_name + " password=" + user_pass);
+    
+    if (users[user_name] != undefined) {
+        if (users[user_name].password == user_pass) {
+            response.send("Good login for user " + user_name);
+        } else {
+            response.redirect("/login?error='Bad password'");
+        }
+    } else {
+        response.redirect("/login?error='No such user'");
+    }
 
-if(users[user_name] != undefined) {
-    if(users[user_name].password == user_pass) {
-    response.send("Good login for user" + user_name);
-} else { 
-    response.redirect("/login");
-} 
-} else {
-    //needed or will hang if correct user name / pass not entered
-    response.send("No such user" + user_name)
-}
 });
 
 app.listen(8080, () => console.log(`listening on port 8080`));

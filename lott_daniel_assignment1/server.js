@@ -27,6 +27,7 @@ app.get('/product_data.js', function (request, response, next) {
    response.type('.js');
    var products_str = `var products = ${JSON.stringify(products)};`; //Stringifies the product array in the product_display.json and sets the string to = products_str variable
    response.send(products_str); 
+   console.log(products);
 });
 
 //Taken from the Stor1 WOD
@@ -81,10 +82,104 @@ app.post("/invoice.html", function (request, response) {
     if (!valid) {
         response.redirect('products_display.html?error=Not Enough Left In Stock');
     } else {
-        // If no errors are found, then redirect to the invoice page.
-        response.redirect('invoice.html?' + ordered);
+        // If no errors are found, then redirect to the login page in addition to the ordered product quantities.
+        response.redirect('login?' + ordered);
     }
 });
+
+var fs = require('fs'); //imports the File System Module from Node js
+var fname = "user_data.json"; //defines the user_data.json file as a variable
+
+if (fs.existsSync(fname)) { //runs an if statement to determine the existence of the file
+    var data = fs.readFileSync(fname, 'utf-8'); //Using the file system module as a parameter and specifying as a utf-8 file type, reads the fname and returns its content
+    var users = JSON.parse(data); //parses the attributes in the user_data.json into javascript objects from the JSON string
+    console.log(users); //returns the javascript objects that were already parsed from the JSON string
+} else {
+    console.log("Sorry file " + fname + " does not exist."); //if file does not exist, then display message in the console
+    
+}
+
+app.get("/login", function (request, response) {
+    // Give a simple login form and display a string 
+    str = `
+<body>
+<form action="" method="POST">
+<input type="text" name="username" size="40" placeholder="enter username" ><br />
+<input type="password" name="password" size="40" placeholder="enter password"><br />
+<input type="submit" value="Submit" id="submit">
+<br>
+Don't have an account? Register here: <input type="button" onclick="location.href='/register';" value="Register" />
+</form>
+</body>
+    `;
+    response.send(str);
+ });
+
+app.post("/login", function (request, response) {
+    // Process login form POST and redirect to logged in page if ok, back to login page if not
+    let POST = request.body;
+    let user_name = POST["username"];
+    let user_pass = POST["password"];
+
+    console.log("User name=" + user_name + " password=" + user_pass);
+    
+    if (users[user_name] != undefined) {
+        if (users[user_name].password == user_pass) {
+            response.redirect("/invoice.html");
+        } else {
+            response.redirect("/login?error='Bad password'");
+        }
+    } else {
+        response.redirect("/login?error='Please enter username and password'");
+        <input type="button" onclick="location.href='/login';" value="Register" />
+    }
+});
+
+app.get("/register", function (request, response) {
+    // Give a simple register form
+    str = `
+<body>
+<form action="" method="POST">
+<input type="text" name="username" size="40" placeholder="enter username" ><br />
+<input type="password" name="password" size="40" placeholder="enter password"><br />
+<input type="password" name="repeat_password" size="40" placeholder="enter password again"><br />
+<input type="email" name="email" size="40" placeholder="enter email"><br />
+<input type="submit" value="Submit" id="submit">
+</form>
+</body>
+    `;
+    response.send(str);
+ });
+
+ app.post("/register", function (request, response) {
+    // process a simple register form
+    let POST = request.body;
+    console.log(POST);
+    let user_name = POST["username"];
+    let user_pass = POST["password"];
+    let user_email = POST["email"];
+    let user_pass2 = POST["repeat_password"];
+
+   
+    if (users[user_name] == undefined && user_pass == user_pass2) {
+        users[user_name] = {};
+        users[user_name].name = user_name;
+        users[user_name].password = user_pass;
+        users[user_name].email = user_email;
+        users[user_name].repeat_password = user_pass2;
+
+        let data = JSON.stringify(users);
+        fs.writeFileSync(fname, data, 'utf-8');
+
+        response.redirect("/invoice.html");
+    } else if (users[user_name] != undefined && user_pass == user_pass2) {
+        response.send("User " + user_name + " already exists!");
+    } else if (users[user_name] == undefined && user_pass != user_pass2) {
+        response.send("Passwords do not match!");
+    }
+
+
+ });
 
 // start server and if started correctly, display message on the console. 
 app.listen(8080, () => console.log(`listening on port 8080`));

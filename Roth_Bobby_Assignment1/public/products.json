@@ -1,0 +1,42 @@
+[
+    {  
+    "name": "Red Crown Tail",  
+    "price": 20.00,  
+    "image": "redcrowntail.png",
+    "quantity_available": 40
+    },
+
+    {  
+    "name":"Blue Half Moon",  
+    "price": 30.00,  
+    "image": "halfmoonbetta.png",
+    "quantity_available": 50
+    },
+
+    {  
+      "name":"Black CrownTail",  
+      "price": 15.00,  
+      "image": "blackcrowntail.png",
+      "quantity_available": 70
+      },
+      
+      {  
+        "name":"Galaxy Double Tail",  
+        "price": 25.00,  
+        "image": "gal.png",
+        "quantity_available": 30
+        },
+     
+        {  
+          "name":"Opal Crown Tail",  
+          "price": 35.00,  
+          "image": "opal.png",
+          "quantity_available": 32
+          },
+          {  
+            "name":"Blue Spade Tail",  
+            "price": 23.00,  
+            "image": "spadetail.png",
+            "quantity_available": 24
+            }            
+  ]

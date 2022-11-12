@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Smart Phone Store</title>
+
+    <script src="./product_data.js" type="text/javascript"></script> 
+
+    <link href="style_home.css" rel="stylesheet">
+    <script>
+        var store_name = "Zachary Matsudo";
+
+        function checkQuantityTextbox(the_object) {
+            let input_string = the_object.value;
+            let error_array = isNonNegativeInteger(input_string, true);
+            if (error_array.length == 0) {
+                qty_textbox_message.innerHTML = input_string;
+            } else {
+                qty_textbox_message.innerHTML = error_array.join("; ");
+            }
+        }
+    </script>
+
+
+</head>
+<body>
+    
+    <header>
+        <h1> 
+            <script> 
+            document.write(store_name+" Candy Store ")
+            </script>
+        </h1>
+
+    </header>
+
+    
+    <div>
+
+        <form name="quantity_form" action="./invoice.html" method="GET">
+       
+
+        <main>
+            
+            
+
+        <script>
+        /* This code was referenced from the Store 1 WOD and is used to display the products on webpage */
+            for (i = 0; i < products.length; i++) {
+        document.write(`
+        <section class ="item">
+            <h2>${products[i].brand}</h2>
+            <p>$${products[i].price}</p>
+            <img src="./images/${products[i].image}">
+            <br>
+            <label id="label_description"}"><B>Description</B></label>
+            <div name="product_description">${products[i].description}</div>
+            <div name="product_available">${products[i].quantity_available}</div>
+            <input type="text" name="quantity${i}" onkeyup="checkQuantityTextbox(this);">
+            <br>
+            <br>
+        </section>
+        ` );
+    };
+        </script>
+        
+
+        </main>
+   
+       
+    
+    </div>
+    
+
+
+
+    <footer>
+        <button type="submit" value="Purchase"> Purchase </button>
+        <h3>
+            Get Your Candy!
+        </h3>
+        <center><p> Zachary Matsudo Fall 2022</p></center>
+       
+        
+    </footer>
+</form>
+</body>
+
+</html>
