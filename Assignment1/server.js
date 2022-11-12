@@ -185,8 +185,6 @@ app.get("/register", function (request, response) {
     } else if (users[user_name] == undefined && user_pass != user_pass2) {
         response.send("Passwords do not match!");
     }
-
-
  });
 
 // start server and if started correctly, display message on the console. 
