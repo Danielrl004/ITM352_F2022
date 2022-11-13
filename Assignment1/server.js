@@ -1,8 +1,10 @@
 var express = require('express'); // importing the express file from node_modules
 var app = express(); //putting imported express files into function named app
 // Routing 
-var crypto = require('crypto');
-crypto.createHash('sha256')
+const crypto = require('crypto');
+
+
+
 
 // route all other GET requests to files in public 
 app.use(express.static(__dirname + '/public'));
@@ -111,7 +113,7 @@ app.get("/login", function (request, response) {
 <br>
 </form>
 <form action="/register" method="GET">
-Don't have an account? Register here: <input type="submit" value="Register" id="submit"/>
+Don't have an account? Register here: <input type="submit" value="Register" id="register"/>
 </form>
 </body>
     `;
@@ -123,7 +125,7 @@ app.post("/login", function (request, response) {
     let POST = request.body;
     let user_name = POST["username"];
     let user_pass = POST["password"];
-
+    
     console.log("User name=" + user_name + " password=" + user_pass);
     
     if (users[user_name] != undefined) {
@@ -160,6 +162,9 @@ app.get("/register", function (request, response) {
     // once users' information is entered into the register page, post then processes the register form
     let POST = request.body; //Sets all the users' inputted information from their request into the POST variable 
     console.log(POST); //Writes the user data into a variable
+    const secret = POST;
+    const hash = crypto.createHash('sha256', secret);
+    console.log(hash);
 
     //The following 4 variables are set to individual attributes of the users' entered information
     let user_name = POST["username"]; 

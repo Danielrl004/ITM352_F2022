@@ -98,15 +98,18 @@
     <footer>
         <h1>
             The Source for the #1 Triathalon Equipement!
-            <br>
-            <input class="submit_button" type="submit" value="Purchase!">
+            <input id="submit_button" type="submit" value="Purchase!">
+            <script>                     
+                document.querySelector('#submit_button').value = 'Enter Valid Quantity';
+            </script>
+            
         </h1>
     </footer>
 </body>
 </form>
 <script>
-                if (params.has('quantity')) { //makes the form "sticky"
-            quantity_form["quantity"].value = params.get('quantity');
-            checkQuantityTextbox(quantity_form["quantity"]);}
+        if (params.has('quantity')) { //makes the form "sticky"
+        quantity_form["quantity"].value = params.get('quantity');
+        checkQuantityTextbox(quantity_form["quantity"]);}
 </script>
 </html>
