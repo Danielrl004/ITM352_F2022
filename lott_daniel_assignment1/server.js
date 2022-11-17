@@ -131,7 +131,6 @@ app.post("/login", function (request, response) {
         }
     } else {
         response.redirect("/login?error='Please enter username and password'");
-        <input type="button" onclick="location.href='/login';" value="Register" />
     }
 });
 

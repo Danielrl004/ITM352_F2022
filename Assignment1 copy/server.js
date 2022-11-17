@@ -1,6 +1,10 @@
 var express = require('express'); // importing the express file from node_modules
 var app = express(); //putting imported express files into function named app
 // Routing 
+const crypto = require('crypto');
+const secret = "hi";
+    const hash = crypto.Hash.PassThrough('sha256', secret);
+    console.log(hash);
 
 // route all other GET requests to files in public 
 app.use(express.static(__dirname + '/public'));
@@ -73,14 +77,16 @@ app.post("/invoice.html", function (request, response) {
                 valid = false;
              }
             }
-    //from Lab 13 info_server.new.js, errors will redirect to products display page
-    //if the number entered is not a valid number as identified through the isNonNegInt(qty) or did not meet the other conditions set in the if statement, then redirect to error msg.
+    //from Lab 13 info_server.new.js. For Individual Requirement 4.
+    /*if the number entered is not a valid number as identified through the isNonNegInt(qty) or did not meet the other conditions set in the if statement,
+    then redirect user back to the products_display page and set the submit_button parameter to the respective error message*/
     if(!valid_num){ 
-        response.redirect('products_display.html?error=Please Enter Valid Quantity');
+        response.redirect('products_display.html?submit_button=Please Enter Valid Quantity!');
     }
-    //if quantity available is less then the amount of quantity ordered, then redirect to error page
+    /*if quantity available is less then the amount of quantity ordered, then redirect user back to the products_display page
+    and set the submit_button parameter to the respective error message*/
     if (!valid) {
-        response.redirect('products_display.html?error=Not Enough Left In Stock');
+        response.redirect('products_display.html?submit_button=Not Enough Left In Stock!');
     } else {
         // If no errors are found, then redirect to the invoice page.
         response.redirect('login?' + ordered);
@@ -107,7 +113,10 @@ app.get("/login", function (request, response) {
 <input type="password" name="password" size="40" placeholder="enter password"><br />
 <input type="submit" value="Submit" id="submit">
 <br>
-Don't have an account? Register here: <input type="button" onclick="location.href='/register';" value="Register" />
+</form>
+<form action="/register" method="GET">
+Don't have an account? Register here: <a href="register" 
+onclick="location.href=this.href+'ordered;return false;">Click here to regsiter<a>
 </form>
 </body>
     `;
@@ -119,7 +128,7 @@ app.post("/login", function (request, response) {
     let POST = request.body;
     let user_name = POST["username"];
     let user_pass = POST["password"];
-
+    
     console.log("User name=" + user_name + " password=" + user_pass);
     
     if (users[user_name] != undefined) {
@@ -156,7 +165,7 @@ app.get("/register", function (request, response) {
     // once users' information is entered into the register page, post then processes the register form
     let POST = request.body; //Sets all the users' inputted information from their request into the POST variable 
     console.log(POST); //Writes the user data into a variable
-
+    
     //The following 4 variables are set to individual attributes of the users' entered information
     let user_name = POST["username"]; 
     let user_pass = POST["password"];
@@ -181,8 +190,6 @@ app.get("/register", function (request, response) {
     } else if (users[user_name] == undefined && user_pass != user_pass2) {
         response.send("Passwords do not match!");
     }
-
-
  });
 
 // start server and if started correctly, display message on the console. 

@@ -56,8 +56,10 @@
     <title>Document</title>
 </head>
 <script>
-  params = (new URL(document.location)).searchParams;
+  params = (new URL(window.location)).searchParams;
+  console.log(params.toString());
 var quantities= [];
+console.log(quantities);
   for(i=0; i<products.length; i++) {
     if(quantities[i] = params.get(`quantity${i}`)){
     } else{ quantities[i] = 0;

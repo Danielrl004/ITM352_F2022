@@ -1,9 +1,13 @@
 var express = require('express'); // importing the express file from node_modules
-var app = express(); //putting imported express files into function named app
-// Routing 
+var app = express(); //putting imported express files into function named app 
+const qs=require('node:querystring');
+var fs = require('fs');
 const crypto = require('crypto');
-
-
+const secret = "hi";
+const hash = crypto.Hash.PassThrough('sha256', secret);
+console.log(hash);
+var string= {};
+var ordered = "";
 
 
 // route all other GET requests to files in public 
@@ -55,44 +59,44 @@ function isNonNegInt(quantityString, returnErrors = false) {
 
 // process POST request which will validate the quantities and check the qty_available. 
 //Code source: Worked with Erin Tachino and Professor Kazman, Lab13-Ex5. 
-app.post("/invoice.html", function (request, response) {
+app.post("/process_purchase", function (request, response) {
     // Process the invoice.html form for all quantities and then redirect if quantities are valid
     let valid = true;  //going to use the boolean to verify if the quantity entered is less than the qty_available 
-    ordered = ""; //ordered variable creates a string that will be used in URL on the invoice page
-    let valid_num= true; 
+    let valid_num= true;
+    ordered = qs.stringify(request.body);
     for (i = 0; i < products.length; i++) { // Runs loop for all products and their respective entered quantities
         let qty_name = 'quantity' + i; //going to be used to set the url string for the different quantities entered in the textbox for each product 
-        let qty = request.body['quantity' + i]; //pulls product quantities for i and sets it to qty. to be used
-        if (qty == "") continue; //if no inputs are entered into a product quantity textbox, then continue to the next product in the qty array.
-            if (isNonNegInt(qty) && qty > 0 && Number(qty) <= products[i].qty_available) {
+        var qty = request.body[qty_name]; //pulls product quantities for i and sets it to qty. to be used
+        if(qty == 0) continue; //if no inputs are entered into a product quantity textbox, then continue to the next product in the qty array.
+            if (isNonNegInt(qty) && Number(qty) <= products[i].qty_available) {
             //if the qty meets the above criteria, then update the product's qty sold and available with the respective product quantities entered
                 products[i].qty_available -= Number(qty);//subtracts quantities from qty_available
                 products[i].total_sold += Number(qty); //increments quantities to quantities sold
-                ordered += qty_name + "=" + qty + "&"; //writes the URL string combining the valid quantities entered by the user
-            } else if(isNonNegInt(qty) != true) {                 
-
+            } else if(isNonNegInt(qty) != true || qty.join("") == 0) {
                 valid_num = false;
             } else if(Number(qty) >= products[i].qty_available) {
                 // If the quantities enter are greater then the qty_available, then valid = false (returns)
                 valid = false;
              }
             }
-    //from Lab 13 info_server.new.js, errors will redirect to products display page
-    //if the number entered is not a valid number as identified through the isNonNegInt(qty) or did not meet the other conditions set in the if statement, then redirect to error msg.
-    if(!valid_num){ 
-        response.redirect('products_display.html?error=Please Enter Valid Quantity');
+    //from Lab 13 info_server.new.js. For Individual Requirement 4.
+    /*if the number entered is not a valid number as identified through the isNonNegInt(qty) or did not meet the other conditions set in the if statement,
+    then redirect user back to the products_display page and set the submit_button parameter to the respective error message*/
+    if(valid_num == false){ 
+        response.redirect('products_display.html?submit_button=Please Enter Valid Quantity!');
     }
-    //if quantity available is less then the amount of quantity ordered, then redirect to error page
-    if (!valid) {
-        response.redirect('products_display.html?error=Not Enough Left In Stock');
+    /*if quantity available is less then the amount of quantity ordered, then redirect user back to the products_display page
+    and set the submit_button parameter to the respective error message*/
+    if (valid == false) {
+        response.redirect('products_display.html?submit_button=Not Enough Left In Stock!');
     } else {
         // If no errors are found, then redirect to the invoice page.
-        response.redirect('login?' + ordered);
+        response.redirect(`login?${ordered}`);
     }
 });
 
-var fs = require('fs');
-var fname = "user_data.json";
+
+var fname = __dirname + "/user_data.json";
 
 if (fs.existsSync(fname)) {
     var data = fs.readFileSync(fname, 'utf-8');
@@ -113,7 +117,7 @@ app.get("/login", function (request, response) {
 <br>
 </form>
 <form action="/register" method="GET">
-Don't have an account? Register here: <input type="submit" value="Register" id="register"/>
+Don't have an account? Register here: <a onclick="window.location='register'+window.location.search;">Click here to regsiter<a>
 </form>
 </body>
     `;
@@ -131,7 +135,8 @@ app.post("/login", function (request, response) {
     if (users[user_name] != undefined) {
         if (users[user_name].password == user_pass) {
             //if the user has a valid username and password and was successfully logged in, then redirect to invoice with the product quantities ordered
-            response.redirect('invoice.html?' + ordered); 
+            console.log(ordered);
+            response.redirect(`invoice.html?${ordered}`); 
         } else {
             response.redirect("/login?error='Bad password'");
         }
@@ -162,16 +167,12 @@ app.get("/register", function (request, response) {
     // once users' information is entered into the register page, post then processes the register form
     let POST = request.body; //Sets all the users' inputted information from their request into the POST variable 
     console.log(POST); //Writes the user data into a variable
-    const secret = POST;
-    const hash = crypto.createHash('sha256', secret);
-    console.log(hash);
-
     //The following 4 variables are set to individual attributes of the users' entered information
     let user_name = POST["username"]; 
     let user_pass = POST["password"];
     let user_email = POST["email"];
     let user_pass2 = POST["repeat_password"];
-
+    
    //runs an if statement 
     if (users[user_name] == undefined && user_pass == user_pass2) {
         users[user_name] = {};
@@ -183,8 +184,7 @@ app.get("/register", function (request, response) {
         //if the users information is 
         let data = JSON.stringify(users);
         fs.writeFileSync(fname, data, 'utf-8'); 
-
-        response.redirect('login?' + ordered);
+        response.redirect(`login?${ordered}`);
     } else if (users[user_name] != undefined && user_pass == user_pass2) {
         response.send("User " + user_name + " already exists!");
     } else if (users[user_name] == undefined && user_pass != user_pass2) {
