@@ -93,9 +93,9 @@ var quantities= [];
       } if(params.has("name")){
         document.getElementById("name").innerHTML = "Welcome " + params.get('name') + "!";
         console.log(params.get('name'))
-      } if(params.has("email")) {
-        document.getElementByID("date").innerhtml = Date();
-        console.log(Date());
+      } if(params.has("date")) {
+        document.getElementById("date").innerHTML = "Last time logged in: " +  params.get('date');
+        console.log("todays date: " + params.get('date'));
       } if(params.has("LogCount")){
         document.getElementById("LogCount").innerHTML = "Times Logged In: " + params.get('LogCount');
       }
@@ -150,6 +150,9 @@ var quantities= [];
       </div>
 </body>
 <footer>
+  <script>;
+  </script>
   <center><button onclick="window.location='products_display.html';">Logout</button></center>
+  <center><button onclick="location.href=`user_update.html?${params.toString()}`;">Edit Credentials</button></center>
 </footer>
 </html>

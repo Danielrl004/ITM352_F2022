@@ -98,7 +98,7 @@ function isNonNegInt(quantityString, returnErrors = false) {
 app.post("/process_purchase", function (request, response) {
     // Process the invoice.html form for all quantities and then redirect if quantities are valid
     let valid = true;  //going to use the boolean to verify if the quantity entered is less than the qty_available 
-    let valid_num= true;
+    let valid_num= true;    
     for (i = 0; i < products.length; i++) { // Runs loop for all products and their respective entered quantities
         let qty_name = 'quantity' + i; //going to be used to set the url string for the different quantities entered in the textbox for each product 
         let qty = request.body[qty_name]; //pulls product quantities for i and sets it to qty. to be used
@@ -112,6 +112,8 @@ app.post("/process_purchase", function (request, response) {
                 valid_num = false;
             } else if(Number(qty) >= products[i].qty_available) { // If the quantities enter are greater then the qty_available, then valid = false (returns)
                 valid = false;
+             } if(qty > 0) {
+                var zero_qty = true;
              }
             }
     //from Lab 13 info_server.new.js. For Individual Requirement 4.
@@ -121,8 +123,13 @@ app.post("/process_purchase", function (request, response) {
         response.redirect('products_display.html?submit_button=Please Enter Valid Quantity!' + '&' + order_str);
     /*if quantity available is less then the amount of quantity ordered, then redirect user back to the products_display page
     and set the submit_button parameter to the respective error message*/
-    } else if (valid == false) {
+    } if(typeof zero_qty == 'undefined') {
+        response.redirect('products_display.html?submit_button=Need to select quantity to purchase' + '&' + order_str);
+    }
+    else if (valid == false) {
         response.redirect('products_display.html?submit_button=Not Enough Left In Stock!' + '&' + order_str);
+    } else if (typeof qty == "") {
+        response.redirect('products_display.html?submit_button=Enter Quantity To Continue!' + '&' + order_str);
     } else {
         // If no errors are found, then redirect to the invoice page.
         qty_ordered = order_str;
@@ -153,19 +160,13 @@ app.post("/login", function (request, response) {
             //adds 1 to the number of times the user has previously logged in and sets the json file's object's property to this value
             users[entered_email].num_loggedIn = 1 + TimesLoggedIn_num;
             console.log("num= " + TimesLoggedIn_num);
-
-            //add date
-            var current_date = new Date();
-            TimesLoggedIn_str = users[entered_email].num_loggedIn;
-            console.log(Date());
-
-            
+                       
             //syncs the new object property value for the times logged in to the user_data.json
             fs.writeFileSync(fname, JSON.stringify(users), 'utf-8'); 
             
             //redirects to the invoice page with the respective variables appended to the url string
-            response.redirect('/invoice.html?' + '&' + order_str + '&' + `email=${entered_email}` + '&' + `name=${users[entered_email].name}` + '&' + `LogCount=${users[entered_email].num_loggedIn}`); // these appended variables are entered into the query string to bring that user input data to the next page
-            return;
+            response.redirect('/invoice.html?' + '&' + order_str + '&' + `email=${entered_email}` + '&' + `name=${users[entered_email].name}` + '&' + `LogCount=${users[entered_email].num_loggedIn}` + '&' + `date=${users[entered_email].last_date_loggin}`); // these appended variables are entered into the query string to bring that user input data to the next page
+            users[entered_email].last_date_loggin = Date();
         } else {
             request.query.email = entered_email; // keeps form sticky
             request.query.LoginError = 'Invalid password!' // if the password is incorrect, push an error and not let the user proceed
@@ -230,39 +231,16 @@ app.post("/register", function (request, response) {
         users[email]["password"] = encrpt_user_password;
         users[email]["email"] = POST['email'];
         users[email].num_loggedIn = 0;
-        users[email].current_date = Date();
+        users[email].last_date_loggin = Date();
         
         fs.writeFileSync(fname, JSON.stringify(users), "utf-8"); // this creates a string using are variable fname which is from users and then JSON will stringify the data "users"
-        response.redirect('/login.html?' + order_str + `name=${user_name}`); // redirect to login page if all registered data is good, we want to keep the name enter so that when they go to the invoice page after logging in with their new user account
+        response.redirect('/login.html?' + order_str + '&' + `name=${user_name}` + '&' + `date=${users[email].last_date_loggin}`); // redirect to login page if all registered data is good, we want to keep the name enter so that when they go to the invoice page after logging in with their new user account
     } else {
         POST['reg_error'] = JSON.stringify(reg_error); // if there are errors we want to create a string 
         let params = new URLSearchParams(POST);
         response.redirect('register.html?' + order_str + params.toString()); // then we will redirect them to the register if they have errors
     }
  });
-
- app.post("/redirect_tologin", function (request, response) {
-    // once users' information is entered into the register page, post then processes the register form
-    let POST = request.body;  // Sets all the users inputted information from their request into the POST variable  
-     entered_email = POST["email"].toLowerCase(); // emailed entered will equal what the user entered and then convert to all lowercase
-    var user_pass = generateCipher(POST['password']); // IR1 we want to encrypt the password 
-    console.log("User email=" + entered_email + " password=" + user_pass);
-    if (typeof users[entered_email] != 'undefined') { // this validates that the email  makes sure that if the entered email matches one of the email's in the user_data.json
-        if(users[entered_email].password == user_pass) { // validates if the input password matches the password in the server data base (user_data.json)
-           qty_ordered['email'] = users[entered_email.name];
-           let params = new URLSearchParams(qty_ordered); // searches for the store data from previous page and puts it in the params
-           response.redirect('/user_update.html?' + '&' + order_str + params.toString());
-           return;
-        } else {
-            request.query.email = entered_email; // keeps form sticky
-            request.query.LoginError = 'Invalid password!' // if the password is incorrect, push an error and not let the user proceed
-        }
-    } else { 
-        request.query.LoginError = 'Invalid username!';
-    }
-    params = new URLSearchParams(request.query);
-    response.redirect('./login.html?' + order_str + params.toString()); // if there is an error during login, redirect back to login
-    });
 
  app.post("/user_update", function (request, response) {
     // once users' information is entered into the register page, post then processes the register form
@@ -299,10 +277,6 @@ app.post("/register", function (request, response) {
     } else {
         reg_error['email'] = 'Please enter valid email';
     }
-    if(typeof users[user_email] != 'undefined') {
-        reg_error['email'] = 'Email already exsist'
-    }
-
     // validate password 
     if((POST['password'].length) < 10) {
         reg_error['password'] = 'Password must be longer than 10 characters'
@@ -322,11 +296,11 @@ app.post("/register", function (request, response) {
         var date = new Date();
         users[email].lastLoggin = date;
         fs.writeFileSync(fname, JSON.stringify(users), "utf-8"); // creates a string from the user information on the server data base using stringify
-        response.redirect('/invoice.html?' + '&' + order_str + '&' + `email=${entered_email}` + '&' + `name=${users[entered_email].name}` + '&' + `LogCount=${users[entered_email].num_loggedIn}`); // direct to the invoice page if all data is valid
+        response.redirect('/login.html?' + '&' + order_str + '&' + `email=${entered_email}` + '&' + `name=${users[entered_email].name}` + '&' + `LogCount=${users[entered_email].num_loggedIn}`); // direct to the invoice page if all data is valid
     } else {
         POST['reg_error'] = JSON.stringify(reg_error);
         let params = new URLSearchParams(POST);
-        response.redirect('register.html?' + order_str + params.toString()); // redirects back to login page if data is invalid
+        response.redirect('user_update.html?' + order_str + params.toString()); // redirects back to login page if data is invalid
     }
  });
  
