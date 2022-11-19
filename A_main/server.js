@@ -148,11 +148,17 @@ app.post("/login", function (request, response) {
             console.log(users[entered_email].num_loggedIn);
             
             //sets the json string to a number
-            TimesLoggedIn_num = Number(TimesLoggedIn_str)
+            TimesLoggedIn_num = Number(TimesLoggedIn_str);
             
             //adds 1 to the number of times the user has previously logged in and sets the json file's object's property to this value
             users[entered_email].num_loggedIn = 1 + TimesLoggedIn_num;
             console.log("num= " + TimesLoggedIn_num);
+
+            //add date
+            var current_date = new Date();
+            TimesLoggedIn_str = users[entered_email].num_loggedIn;
+            console.log(Date());
+
             
             //syncs the new object property value for the times logged in to the user_data.json
             fs.writeFileSync(fname, JSON.stringify(users), 'utf-8'); 
@@ -171,21 +177,110 @@ app.post("/login", function (request, response) {
     response.redirect('./login.html?' + '&' + `errors=${request.query.LoginError}` + '&' + order_str + '&' + `email=${entered_email}`); // if there is an error during login, redirect back to login
 
     });
-
+// A2 reference reading and writing user info to a JSON file 
 app.post("/register", function (request, response) {
+    // once users' information is entered into the register page, post then processes the register form
+    let POST = request.body; // Sets all the users' inputted information from their request into the POST variable 
+    console.log(POST); //Writes the user data into a variable
+    //The following 4 variables are set to individual attributes of the users' entered information
+    let encrpt_user_password = generateCipher(POST["password"]); // IR1 we want to encrypt the password the register user inputs
+     let reg_error = {}; // made this an open string for errors within the registation page 
+      user_name = POST["name"]; 
+      user_pass = POST["password"];
+      user_email = POST["email"];
+      user_pass2 = POST["repeat_password"];
+
+     let onlyletters = /^[A-Za-z]+$/; // only allows letters /* case insensitive - format must be ex. erin@gmail.com */
+     let email_valid_input = /^[A-Za-z0-9_.]+@([A-Za-z0-9_.]*\.)+([a-zA-Z]{2}|[a-zA-Z]{3})$/; 
+    /* case sensitive - format must have at least special character "!", one number "2", and upper and lower case letters */
+
+  
+     // using an if statement to validate what we call "name" from our user_data.json
+    if(onlyletters.test(POST.name)) { // calling the variable that has the rule for only letters, the name cannot be anything but letters
+    } else {
+        reg_error['name'] = 'Must only use valid letters'; // if there are any nonletter within name then the query string will have this message
+    }
+    // validating that name is at least 2 characters long and under 30 characters
+    if(POST.name > 30 || POST.name < 2) {
+        reg_error['name'] = 'Full name must be at least 2 characters long, no more than 30 character allowed'
+    } // if it is shorter than 2 or above 30 then this message will appear in the query string 
+
+    // if statement to check if email added is valid to the requirements called by the variable email_valid_input
+    if(email_valid_input.test(POST.email)) {
+    } else {
+        reg_error['email'] = 'Please enter valid email'; // if it does not meet the requirements for valid email then this message appears in query string 
+    }
+    if(typeof users[user_email] != 'undefined') { // if the email is already within the our user_data.json 
+        reg_error['email'] = 'Email already exsist' // then send this message to the query string 
+    }
+
+    // if statement to valid password length - required by A2 to have at least 10 characters
+    if((POST['password'].length) < 10) { // used .length so that it reads the length of password that is inputted
+        reg_error['password'] = 'Password must be longer than 10 characters' // message appears in query string
+    }
+    if((POST['password']) != POST['repeat_password']) { // make sure both password match 
+        reg_error['repeat_password']
+    }
+    // used object.keys for the array to check that errors equal to zero
+    // ref for objectkeys: https://www.w3schools.com/jsref/jsref_object_keys.asp
+    if (Object.keys(reg_error).length == 0) { 
+        var email = POST['email'].toLowerCase();
+        users[email] = {};
+        users[email].name = POST['name'];
+        users[email]["password"] = encrpt_user_password;
+        users[email]["email"] = POST['email'];
+        users[email].num_loggedIn = 0;
+        users[email].current_date = Date();
+        
+        fs.writeFileSync(fname, JSON.stringify(users), "utf-8"); // this creates a string using are variable fname which is from users and then JSON will stringify the data "users"
+        response.redirect('/login.html?' + order_str + `name=${user_name}`); // redirect to login page if all registered data is good, we want to keep the name enter so that when they go to the invoice page after logging in with their new user account
+    } else {
+        POST['reg_error'] = JSON.stringify(reg_error); // if there are errors we want to create a string 
+        let params = new URLSearchParams(POST);
+        response.redirect('register.html?' + order_str + params.toString()); // then we will redirect them to the register if they have errors
+    }
+ });
+
+ app.post("/redirect_tologin", function (request, response) {
+    // once users' information is entered into the register page, post then processes the register form
+    let POST = request.body;  // Sets all the users inputted information from their request into the POST variable  
+     entered_email = POST["email"].toLowerCase(); // emailed entered will equal what the user entered and then convert to all lowercase
+    var user_pass = generateCipher(POST['password']); // IR1 we want to encrypt the password 
+    console.log("User email=" + entered_email + " password=" + user_pass);
+    if (typeof users[entered_email] != 'undefined') { // this validates that the email  makes sure that if the entered email matches one of the email's in the user_data.json
+        if(users[entered_email].password == user_pass) { // validates if the input password matches the password in the server data base (user_data.json)
+           qty_ordered['email'] = users[entered_email.name];
+           let params = new URLSearchParams(qty_ordered); // searches for the store data from previous page and puts it in the params
+           response.redirect('/user_update.html?' + '&' + order_str + params.toString());
+           return;
+        } else {
+            request.query.email = entered_email; // keeps form sticky
+            request.query.LoginError = 'Invalid password!' // if the password is incorrect, push an error and not let the user proceed
+        }
+    } else { 
+        request.query.LoginError = 'Invalid username!';
+    }
+    params = new URLSearchParams(request.query);
+    response.redirect('./login.html?' + order_str + params.toString()); // if there is an error during login, redirect back to login
+    });
+
+ app.post("/user_update", function (request, response) {
     // once users' information is entered into the register page, post then processes the register form
     let POST = request.body; //Sets all the users' inputted information from their request into the POST variable 
     console.log(POST); //Writes the user data into a variable
     //The following 4 variables are set to individual attributes of the users' entered information
-
-    let encrpt_user_password = generateCipher(POST.password);
+    let encrpt_user_password = generateCipher(POST["password"]);
      let reg_error = {};
+      user_name = POST["fullname"]; 
+      user_pass = POST["password"];
+      user_email = POST["email"];
+      user_pass2 = POST["repeat_password"];
 
      let onlyletters = /^[A-Za-z]+$/; // only allows letters 
     /* case insensitive - format must be ex. erin@gmail.com */
      let email_valid_input = /^[A-Za-z0-9_.]+@([A-Za-z0-9_.]*\.)+([a-zA-Z]{2}|[a-zA-Z]{3})$/; 
     /* case sensitive - format must have at least special character "!", one number "2", and upper and lower case letters */
-     let password_valid_input = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!#\$%&@;:])/; 
+     // let password_valid_input = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!#\$%&@;:])/;  ?????
 
 
      
@@ -209,42 +304,31 @@ app.post("/register", function (request, response) {
     }
 
     // validate password 
-    if(POST.user_pass < 10) {
+    if((POST['password'].length) < 10) {
         reg_error['password'] = 'Password must be longer than 10 characters'
     }
-    if(POST.user_pass != POST.user_pass2) {
+    if((POST['password']) != POST['repeat_password']) {
         reg_error['repeat_password']
     }
 
-    //IR2 
-    if(password_valid_input.test(POST.user_pass)) {
+    if (Object.keys(reg_error).length == 0) { // validates that the array that is being returned, which is the errors, is 0. If it is, redirect to invoice
+        var email = POST['email'].toLowerCase();
+        users[email] = {};
+        users[email].fullname = user_name;
+        users[email].password = encrpt_user_password;
+        users[email].email = user_email;
+        users[email].num_loggedIn = 1;
+
+        var date = new Date();
+        users[email].lastLoggin = date;
+        fs.writeFileSync(fname, JSON.stringify(users), "utf-8"); // creates a string from the user information on the server data base using stringify
+        response.redirect('/invoice.html?' + '&' + order_str + '&' + `email=${entered_email}` + '&' + `name=${users[entered_email].name}` + '&' + `LogCount=${users[entered_email].num_loggedIn}`); // direct to the invoice page if all data is valid
     } else {
-        reg_error['password'] = 'Password must have at least 1 special character eg. "@!#" and at least one number'
-    }
-    
-
-
-   //runs an if statement 
-    if(Object.keys(reg_error).length == 0) {
-        var user_name = POST["name"].toLowerCase(); 
-        var user_pass = POST["password"];
-        var user_email = POST["email"].toLowerCase();
-        var user_pass2 = POST["repeat_password"];
-
-        users[user_email] = {};
-        users[user_email].name = user_name;
-        users[user_email].password = encrpt_user_password;
-        users[user_email].email = user_email;
-        users[user_email].repeat_password = encrpt_user_password2;
-
-        
-        //if the users information is 
-        let data = JSON.stringify(users);
-        fs.writeFileSync(fname, data.toString(), 'utf-8'); 
-        response.redirect(`login.html?${order_str} & ${user_email}`);
+        POST['reg_error'] = JSON.stringify(reg_error);
+        let params = new URLSearchParams(POST);
+        response.redirect('register.html?' + order_str + params.toString()); // redirects back to login page if data is invalid
     }
  });
-
  
 
 // start server and if started correctly, display message on the console. 
