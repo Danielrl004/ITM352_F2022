@@ -4,9 +4,7 @@
 
 
 <script>
-          //validation on the invoice
-          //checks if entered values are valid and will return true or false
-          //If returnErrors is true, then the generateItemRows function will proceed to generate the invoice table
+
           function isNonNegInt(queryString, returnErrors = false) { 
             errors = []; // assume no errors at first
             if (Number(queryString) != queryString) {
@@ -24,8 +22,8 @@
                 return false;
             }
         }   
-  //generates table item rows 
-  function generate_item_rows(product_quantities_array){ 
+
+  function generate_item_rows(product_quantities_array){ //generates table item rows 
   for(i=0; i<product_quantities_array.length; i++){
     if(quantities[i]==0){
       continue;
@@ -60,12 +58,9 @@
     <title>Document</title>
 </head>
 <script>
-  //Retrieves and sets the url search parameters to a variable
   params = (new URL(document.location)).searchParams;
-  //sets quantities to an array which will be used in the for loop
 var quantities= [];
   for(i=0; i<products.length; i++) {
-    //compares 
     if(quantities[i] = params.get(`quantity${i}`)){
     } else{ quantities[i] = 0;
   }
