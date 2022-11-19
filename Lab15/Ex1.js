@@ -39,9 +39,16 @@ app.get("/use_session", function(request, response){
 
 app.get("/login", function (request, response) {
     // Give a simple login form
+    if(typeof request.session.last_login != undefined){
+        login_time='Last login was' + request.session.last_login;
+    } else {
+        login_time = 'First login';
+    }
+    my_cookie_name = request.cookies['username'];
     str = `
 <body>
 <form action="" method="POST">
+Login info: ${login_time} by ${my_cookie_name} <br>
 <input type="text" name="username" size="40" placeholder="enter username" ><br />
 <input type="password" name="password" size="40" placeholder="enter password"><br />
 <input type="submit" value="Submit" id="submit">
@@ -61,14 +68,20 @@ app.post("/login", function (request, response) {
     
     if (users[user_name] != undefined) {
         if (users[user_name].password == user_pass) {
-            response.send("Good login for user " + user_name);
+            if(typeof request.session.last_login != undefined) {
+            var msg= `You last logged in ${request.session.last_login}`;
+            var now = new Date();
         } else {
-            response.redirect("/login?error='Bad password'");
-        }
-    } else {
-        response.redirect("/login?error='No such user'");
+            var msg = '';
+            var now = 'First visit';
+        }}
+        request.session.last_login = now;
+        //we didn't respond so was page was hanging.
+        //response.send resolves issue
+        response.cookie('username', user_name).send(`${msg}<br>${user_name} logged in ${now}`)
+    }else {
+        response.send('No such user');
     }
-
 });
 
 app.get("/register", function (request, response) {

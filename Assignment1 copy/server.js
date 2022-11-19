@@ -109,6 +109,7 @@ app.get("/login", function (request, response) {
     str = `
 <body>
 <form action="" method="POST">
+
 <input type="text" name="username" size="40" placeholder="enter username" ><br />
 <input type="password" name="password" size="40" placeholder="enter password"><br />
 <input type="submit" value="Submit" id="submit">
@@ -134,8 +135,11 @@ app.post("/login", function (request, response) {
     if (users[user_name] != undefined) {
         if (users[user_name].password == user_pass) {
             //if the user has a valid username and password and was successfully logged in, then redirect to invoice with the product quantities ordered
-            response.redirect('invoice.html?' + ordered); 
-        } else {
+            users[user_name].num_loggedIn += 1;
+            let data = JSON.stringify(users[user_name]);
+            fs.writeFileSync(fname, data, 'utf-8');
+            response.redirect(`invoice.html?${ordered}); 
+        `)} else {
             response.redirect("/login?error='Bad password'");
         }
     } else {
@@ -179,6 +183,7 @@ app.get("/register", function (request, response) {
         users[user_name].password = user_pass;
         users[user_name].email = user_email;
         users[user_name].repeat_password = user_pass2;
+        users[user_name].num_loggedIn = 0;
         
         //if the users information is 
         let data = JSON.stringify(users);

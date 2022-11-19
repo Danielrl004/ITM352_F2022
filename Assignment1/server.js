@@ -4,8 +4,6 @@ const qs=require('node:querystring');
 var fs = require('fs');
 const crypto = require('crypto');
 const secret = "hi";
-const hash = crypto.Hash.PassThrough('sha256', secret);
-console.log(hash);
 var string= {};
 var ordered = "";
 
@@ -23,7 +21,7 @@ app.all('*', function (request, response, next) {
 });
 
 //set the product_data.json array to variable products
-products = require('./public/product_data.json');
+products = require('./product_data.json');
 
 //Taken from Lab13, Ex5 
 //Runs through each element in the product array and initiailly set the total_sold 0
@@ -57,22 +55,22 @@ function isNonNegInt(quantityString, returnErrors = false) {
     }
 };
 
+
 // process POST request which will validate the quantities and check the qty_available. 
 //Code source: Worked with Erin Tachino and Professor Kazman, Lab13-Ex5. 
 app.post("/process_purchase", function (request, response) {
     // Process the invoice.html form for all quantities and then redirect if quantities are valid
     let valid = true;  //going to use the boolean to verify if the quantity entered is less than the qty_available 
     let valid_num= true;
-    ordered = qs.stringify(request.body);
     for (i = 0; i < products.length; i++) { // Runs loop for all products and their respective entered quantities
         let qty_name = 'quantity' + i; //going to be used to set the url string for the different quantities entered in the textbox for each product 
-        var qty = request.body[qty_name]; //pulls product quantities for i and sets it to qty. to be used
+        let qty = request.body[qty_name]; //pulls product quantities for i and sets it to qty. to be used
         if(qty == 0) continue; //if no inputs are entered into a product quantity textbox, then continue to the next product in the qty array.
             if (isNonNegInt(qty) && Number(qty) <= products[i].qty_available) {
             //if the qty meets the above criteria, then update the product's qty sold and available with the respective product quantities entered
                 products[i].qty_available -= Number(qty);//subtracts quantities from qty_available
                 products[i].total_sold += Number(qty); //increments quantities to quantities sold
-            } else if(isNonNegInt(qty) != true || qty.join("") == 0) {
+            } else if(isNonNegInt(qty) != true || qty.value.length == 0) {
                 valid_num = false;
             } else if(Number(qty) >= products[i].qty_available) {
                 // If the quantities enter are greater then the qty_available, then valid = false (returns)
@@ -91,6 +89,7 @@ app.post("/process_purchase", function (request, response) {
         response.redirect('products_display.html?submit_button=Not Enough Left In Stock!');
     } else {
         // If no errors are found, then redirect to the invoice page.
+        ordered = qs.stringify(JSON.stringify(request.body));
         response.redirect(`login?${ordered}`);
     }
 });
@@ -102,10 +101,11 @@ if (fs.existsSync(fname)) {
     var data = fs.readFileSync(fname, 'utf-8');
     var users = JSON.parse(data);
     console.log(users);
+    console.log(Object.entries(users));
 } else {
     console.log("Sorry file " + fname + " does not exist.");
 }
-
+ 
 app.get("/login", function (request, response) {
     // Give a login form
     str = `
@@ -117,7 +117,7 @@ app.get("/login", function (request, response) {
 <br>
 </form>
 <form action="/register" method="GET">
-Don't have an account? Register here: <a onclick="window.location='register'+window.location.search;">Click here to regsiter<a>
+Don't have an account? Register here: <a onclick="window.location='register'+window.location.search;">Click here to register<a>
 </form>
 </body>
     `;
@@ -134,6 +134,8 @@ app.post("/login", function (request, response) {
     
     if (users[user_name] != undefined) {
         if (users[user_name].password == user_pass) {
+            users[user_name].num_loggedIn += 1;
+            console.log(users[user_name].num_loggedIn);
             //if the user has a valid username and password and was successfully logged in, then redirect to invoice with the product quantities ordered
             console.log(ordered);
             response.redirect(`invoice.html?${ordered}`); 

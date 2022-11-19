@@ -1,0 +1,50 @@
+[
+    {
+        "mug_style": "Strawberry Mug with Matching Coaster and Tulip Spoon",
+        "price": 11.78,
+        "image": "/images/Strawberry.jpg",
+        "quantity_available": 4
+    },
+    {
+        "mug_style": "Sakura Mug with Matching Coaster",
+        "price": 29.27,
+        "image": "/images/Sakura.jpg",
+        "quantity_available": 5
+    },
+    {
+        "mug_style": "Pumpkin Mug with Matching Coaster",
+        "price": 29.81,
+        "image": "/images/Pumpkin.jpg",
+        "quantity_available": 7
+    },
+    {
+        "mug_style": "Cloud Mug with Matching Coaster",
+        "price": 23.57,
+        "image": "/images/Cloud.jpg",
+        "quantity_available": 3
+    },
+    {
+        "mug_style": "Star Mug with Matching Spoon and Coaster",
+        "price": 14.41,
+        "image": "/images/Star.jpg",
+        "quantity_available": 8
+    },
+    {
+        "mug_style": "Emerald Green Mug with Matching Plate",
+        "price": 29.27,
+        "image": "/images/Flower.jpg",
+        "quantity_available": 2
+    },
+    {
+        "mug_style": "Avocado Mug with Matching Plate",
+        "price": 26.19,
+        "image": "/images/Avocado.jpg",
+        "quantity_available": 7
+    },
+    {
+        "mug_style": "Sun Mug with Matching Plate",
+        "price": 22.26,
+        "image": "/images/Sun.jpg",
+        "quantity_available": 3
+    }
+]

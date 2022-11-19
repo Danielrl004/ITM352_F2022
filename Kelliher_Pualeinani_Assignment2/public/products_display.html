@@ -1,0 +1,191 @@
+<!-- Made by: Pua Kelliher on 10/19/2022 -->
+<!-- This is file displays the website containing my products, asks customers which items they wish to purchase -->
+<!-- Template from W3 Schools: "Food Blog Template" https://www.w3schools.com/w3css/w3css_templates.asp -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Get product data -->
+<script src="./products_data.json"></script>
+
+<head>
+
+    <title>Assignment 2 - Website</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+
+    <!-- Additional CSS -->
+    <style>
+        body {
+            font-family: "Karma", sans-serif;
+        }
+
+        h1 {
+            font-family: "Karma", sans-serif;
+            font-size: 35px;
+            font-weight: bolder;
+        }
+
+        h3 {
+            font-family: "Karma", sans-serif;
+            height: 100px;
+        }
+
+        p {
+            font-size: 23px;
+            font-weight: bolder;
+        }
+
+        span {
+            font-size: 18px;
+        }
+
+        .w3-bar-block .w3-bar-item {
+            padding: 20px
+        }
+
+        .error_message {
+            padding-top: 10px;
+            color: crimson;
+        }
+
+        #checkout_button {
+            font-size: 20px;
+        }
+    </style>
+
+</head>
+
+<form action="./purchase" method="POST">
+
+    <body>
+
+        <script>
+
+            // Get quantities and errors from the query string
+            let params = (new URL(document.location)).searchParams;
+
+            // Wait for document to load before getting values
+            window.onload = function () {
+
+                // If no items are selected, show an alert and change the button to suggest the user to select items
+                if (params.has('errors_obj_JSON')) {
+                    var errors = JSON.parse(params.get('errors_obj_JSON'));
+                    
+                    if (typeof errors['no_selections_error'] != 'undefined') {
+                        checkout_button.value = errors['no_selections_error'];
+                        alert(errors['no_selections_error']);
+                    }
+
+                    // Show errors
+                    for (let i in products_array) {
+
+                        // Put previously selected quantities back into textboxes
+                        document.getElementById('quantity' + i).value = params.get('quantity' + i);
+
+                        // If there are quantity errors, show them on the products_display page and change the button to suggest the user change selected items
+                        if (typeof errors['quantity_error' + i] != 'undefined') {
+                            document.getElementById(`quantity${i}_message`).innerHTML = errors['quantity_error' + i].join('<br>');
+                            checkout_button.value = "Fix your quantity errors above";
+                        }
+
+                        // If the quantity that is selected is more than what is available, show an error on the products_display page and change the button to suggest the user change selected items
+                        if (typeof errors['not_enough_items' + i] != 'undefined') {
+                            document.getElementById(`quantity${i}_message`).innerHTML = errors['not_enough_items' + i];
+                            checkout_button.value = "Fix your quantity errors above";
+                        }
+                    }
+
+                }
+            };
+
+        </script>
+
+        <!-- Top menu -->
+        <div class="w3-top">
+            <div class="w3-white w3-xlarge" style="max-width:1200px;margin:auto">
+                <div class="w3-center w3-padding-16">
+                    <h1>Handmade Ceramic Mugs</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- !PAGE CONTENT! -->
+        <div class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
+
+            <!-- First Photo Grid-->
+            <div class="w3-row-padding w3-padding-16 w3-center" id="food">
+                <script>
+
+                    // Display products and info about the products in the first row
+                    for (i = 0; i < products_array.length; i++) {
+                        if (i < ((products_array.length) / 2)) {
+                            document.write(`
+                            <div class="w3-quarter">
+                                <img src="${products_array[i].image}" style="width:100%">
+                                <h3>${products_array[i].mug_style}</h3>
+                                <p>\$${products_array[i].price}</p>
+                                <span>Quantity Available: ${products_array[i].quantity_available}<br></span>
+                                <label id="quantity${i}_label">Quantity:</label>
+                                <input type="text" name="quantity${i}" id="quantity${i}">
+                                <div class="error_message"
+                                    <p id='quantity${i}_message'><br></p>
+                                </div>
+                            </div>
+                        `)
+
+                        }
+
+                    }
+
+                </script>
+            </div>
+
+            <!-- Second Photo Grid-->
+            <div class="w3-row-padding w3-padding-16 w3-center">
+                <script>
+
+                    // Display products and info about the products in the second row
+                    for (i = 0; i < products_array.length; i++) {
+                        if (i >= ((products_array.length) / 2)) {
+                            document.write(`
+                            <div class="w3-quarter">
+                                <img src="${products_array[i].image}" alt="Sandwich" style="width:100%">
+                                <h3>${products_array[i].mug_style}</h3>
+                                <p>\$${products_array[i].price}</p>
+                                <span>Quantity Available: ${products_array[i].quantity_available}<br></span>
+                                <label id="quantity${i}_label">Quantity:</label>
+                                <input type="text" name="quantity${i}" id="quantity${i}">
+                                <div class="error_message"
+                                    <p id='quantity${i}_message'><br></p>
+                                </div>
+                            </div>
+                        `)
+
+                        }
+
+                    }
+
+                </script>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="w3-container w3-padding-32 w3-center">
+
+            <!-- Submit button when user is ready to order items -->
+            <input type="submit" id="checkout_button" value="Click Here to Order Items!">
+            
+        </footer>
+
+        <!-- End page content -->
+        </div>
+
+    </body>
+</form>
+
+</html>
