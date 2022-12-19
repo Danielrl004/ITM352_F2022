@@ -153,20 +153,6 @@
         </center>
         <script>
             //FOR INDIVIDUAL REQUIREMENT 4 ASSIGNMENT 3
-            // Loads a JSON file from the specified URL and calls the callback function with the response
-            function loadJSON(url, callback) {
-                let xobj = new XMLHttpRequest();
-                xobj.overrideMimeType("application/json");
-                xobj.open('GET', url, true);
-                xobj.onreadystatechange = function () {
-                    if (xobj.readyState == 4 && xobj.status == "200") {
-                        // Call the callback function with the response text
-                        callback(xobj.responseText);
-                    }
-                };
-                xobj.send(null);
-            }
-
             // Loads the favorites data from the add_to_fav file and updates the page to reflect the stored favorites
             loadJSON('./add_to_fav', function (response) {
                 // Parse the JSON string into an object
